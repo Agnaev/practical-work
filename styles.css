@@ -1,0 +1,63 @@
+.table {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    min-height: 20px;
+    height: 24px;
+}
+
+.row-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 40px;
+    height: 100%;
+    border: 1px solid #404040;
+    background: #f8f9fa;
+    border-top: none;
+    position: relative;
+}
+
+.row-data {
+    display: flex;
+}
+
+.column {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f8f9fa;
+    border: 1px solid #404040;
+    border-top: none;
+    border-left: none;
+    height: 100%;
+    position: relative;
+}
+
+.cell {
+    box-sizing: border-box;
+    min-width: 40px;
+    padding: 5px;
+    width: 120px;
+    height: 100%;
+    border: 1px solid #e2e3e3;
+    border-top: 0;
+    border-left: 0;
+    color: #111;
+    white-space: nowrap;
+    outline: none;
+    display: flex;
+    align-content: center;
+}
+
+#grantt {
+
+}
