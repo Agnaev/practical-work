@@ -1,33 +1,31 @@
-function toCell(row) {
+export function toCell(row) {
 	return function(_, col) {
 		const id = row + ':' + col
 		return `
       <div 
         class="cell" 
         contenteditable="true"
-        data-col="${col}"
-        data-type="cell"
         data-id="${id}"
-      ></div>
+      >${row || ''}${col}</div>
     `
 	}
 }
 
-function createRow(index, content) {
+export function createRow(index, content) {
 	return `
     <div 
     	class="row" 
     	data-row="${index}"
-		>
+	>
       <div class="row-data">${content}</div>
     </div>
   `
 }
 
-function createTable(length) {
+export function createTable(length) {
 	const rows = []
 
-	for (let row = 0; row < length; row++) {
+	for (let row = 1; row < length; row++) {
 		const cells = new Array(length)
 			.fill('')
 			.map(toCell(row))

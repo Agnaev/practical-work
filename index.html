@@ -1,21 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Processing of parts by conveyor</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/Chart.css">
 </head>
 <body>
 
     <div class="table"></div>
 
     <div class="permutation"></div>
+    <button id="drawChart">Draw chart</button>
 
-    <canvas id="grantt"></canvas>
+    <div id="gantt" class="gantt">
+        <div class="chart-wrapper">
+            <ul class="chart-values">
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
+                <li>4</li>
+                <li>5</li>
+                <li>6</li>
+                <li>7</li>
+                <li>8</li>
+                <li>9</li>
+                <li>10</li>
+                <li>11</li>
+                <li>12</li>
+                <li>13</li>
+                <li>14</li>
+                <li>15</li>
+                <li>16</li>
+                <li>17</li>
+                <li>18</li>
+                <li>19</li>
+                <li>20</li>
+                <li>21</li>
+                <li>22</li>
+                <li>23</li>
+                <li>24</li>
+                <li>25</li>
+                <li>26</li>
+                <li>27</li>
+                <li>28</li>
+                <li>29</li>
+                <li>30</li>
+                <li>31</li>
+                <li>32</li>
+                <li>33</li>
+                <li>34</li>
+                <li>35</li>
+                <li>36</li>
+                <li>37</li>
+                <li>38</li>
+                <li>39</li>
+                <li>40</li>
+            </ul>
+            <ul class="chart-bars">
+                <li data-duration="1-2">Task 1</li>
+                <li data-duration="2-3">Task 2</li>
+                <li data-duration="3-4">Task 3</li>
+                <li data-duration="4-5">Task 4</li>
+                <li data-duration="5-6">Task 5</li>
+                <li data-duration="6-7">Task 6</li>
+                <li data-duration="7-8">Task 7</li>
+                <li data-duration="8-9">Task 8</li>
+                <li data-duration="9-10">Task 9</li>
+                <li data-duration="10-11">Task 10</li>
+                <li data-duration="11-12">Task 11</li>
+                <li data-duration="12-13">Task 12</li>
+                <li data-duration="13-14">Task 13</li>
+                <li data-duration="14-15">Task 14</li>
+                <li data-duration="15-16">Task 15</li>
+                <li data-duration="16-17">Task 16</li>
+                <li data-duration="17-18">Task 17</li>
+                <li data-duration="18-19">Task 18</li>
+                <li data-duration="19-20">Task 19</li>
+                <li data-duration="20-21">Task 20</li>
+            </ul>
+        </div>
+    </div>
 
-    <script src="scripts/liba.js"></script>
-    <script src="scripts/Table.js"></script>
-    <script src="scripts/Chart.js"></script>
-    <script src="scripts/script.js"></script>
+    <script type="module" src="scripts/script.js"></script>
 </body>
 </html>
