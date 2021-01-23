@@ -58,8 +58,14 @@ class Liba {
 			}
 		})
 	}
+
+	clear() {
+		this.$el.innerHTML = ''
+	}
 }
 
 export function $(selector) {
 	return new Liba(selector)
 }
+
+window.$ = $

@@ -1,83 +1,20 @@
-:root {
-    --white: #fff;
-    --divider: lightgrey;
-    --body: #f5f7f8;
-}
-
-* {
-    padding: 0;
-    margin: 0;
+.tool, .permutation[data-permutation] {
     box-sizing: border-box;
-}
-
-ul {
-    list-style: none;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-body {
-    background: var(--body);
-    font-size: 16px;
-    font-family: sans-serif;
-}
-
-.chart-wrapper {
-    max-width: 1150px;
-    padding: 0 10px;
-}
-
-
-/* CHART-VALUES
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
-.chart-wrapper .chart-values {
-    position: relative;
+    min-width: 10px;
+    padding: 5px;
+    height: 100%;
+    border: 1px solid #e2e3e3;
+    color: #111;
+    white-space: nowrap;
+    outline: none;
     display: flex;
-    margin-bottom: 20px;
-    font-weight: bold;
-    font-size: 1.2rem;
+    align-content: center;
 }
 
-.chart-wrapper .chart-values li {
-    flex: 1;
-    min-width: 80px;
-    text-align: center;
+.permutation {
+    width: 100px;
 }
 
-.chart-wrapper .chart-values li {
-    position: relative;
+.gantt {
+    margin: 25px;
 }
-
-.chart-wrapper .chart-values li:after {
-    content: '';
-    position: absolute;
-    right: 0;
-    height: 510px;
-    border-right: 1px solid var(--divider);
-    border-left: 1px solid var(--divider);
-}
-
-
-/* CHART-BARS
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
-.chart-wrapper .chart-bars li {
-    position: relative;
-    color: var(--white);
-    margin-bottom: 15px;
-    font-size: 16px;
-    border-radius: 20px;
-    padding: 10px 20px;
-    width: 0;
-    opacity: 0;
-    transition: all 0.65s linear 0.2s;
-}
-
-@media screen and (max-width: 600px) {
-    .chart-wrapper .chart-bars li {
-        padding: 10px;
-    }
-}
-

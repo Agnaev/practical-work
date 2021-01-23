@@ -1,40 +1,76 @@
-import {$} from './liba'
-import '../styles/Chart.css'
+export function toCell(row) {
+    return function(_, col) {
+        const id = row + ':' + col
+        return `
+          <div 
+            class="tool"
+            data-row="${row}"
+            data-col="${col}"
+            data-id="${id}"
+          ></div>
+        `
+    }
+}
 
-function randomHexColor() {
+export function createRow(index, content) {
+    return `
+    <div 
+    	class="row" 
+    	data-row="${index}"
+	>
+      <div class="row-data">${content}</div>
+    </div>
+  `
+}
+
+export function createChart(colsLength, rowsLength) {
+    const rows = []
+
+    for (let row = 0; row < colsLength; row++) {
+        const cells = new Array(rowsLength)
+          .fill('')
+          .map(toCell(row))
+          .join('')
+
+        rows.push(createRow(row + 1, cells))
+    }
+
+    return rows.join('')
+}
+
+function rndColor() {
     return '#' + Math.random().toString(16).slice(-6)
 }
 
-export function createGanttChart(e) {
-    const row = document.querySelectorAll(".chart-values li");
-    const tasks = document.querySelectorAll(".chart-bars li");
-    const rowArray = [...row];
-
-    tasks.forEach(el => {
-        el = $(el)
-        const [taskStart, taskEnd] = el.data.duration.split("-");
-
-        const {start, end} = rowArray.reduce((res, item) => {
-            if (item.textContent === taskEnd) res.end = item
-            if (item.textContent === taskStart) res.start = item
-            return res
-        }, {})
-
-        const left = start.offsetLeft;
-        const width = end.offsetLeft + end.offsetWidth - left;
-
-        el.css({
-            left: left + 'px',
-            width: width + 'px'
-        })
-        if (e.type === "load") {
-            el.css({
-                backgroundColor: randomHexColor(),
-                opacity: 1
-            })
+function applyPermutation(mas, order) {
+    const result = new Array(mas.length).fill(0)
+    for (let i = 0; i < mas.length; i++) {
+        result[i] = new Array(mas[i].length).fill(0)
+        for (let j = 0; j < mas[i].length; j++) {
+            result[i][order[j]] = mas[i][j]
         }
-    });
+    }
+    return result
 }
 
-window.addEventListener("load", createGanttChart);
-window.addEventListener("resize", createGanttChart);
+export function draw(arr, order) {
+    const colors = new Array(tasksCount).fill('').map(() => rndColor())
+    const lockers = new Array(tasksCount).fill(0)
+
+    applyPermutation(arr, order).forEach((line, toolNum) => {
+        const tool = document.querySelectorAll(`.tool[data-row="${toolNum}"]`)
+        let shift = 0
+        line.forEach((renderCount, i) => {
+            if (shift < lockers[i]) {
+                const count = lockers[i] - shift
+                shift += count
+            }
+            for (let j = 0; j < renderCount; j++) {
+                tool[shift].style.backgroundColor = colors[i]
+                shift += 1
+            }
+            lockers[i] = shift
+        })
+
+    })
+}
