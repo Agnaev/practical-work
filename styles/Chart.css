@@ -1,6 +1,6 @@
 .tool, .permutation[data-permutation] {
     box-sizing: border-box;
-    min-width: 10px;
+    min-width: 30px;
     padding: 5px;
     height: 100%;
     border: 1px solid #e2e3e3;

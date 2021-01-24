@@ -1,6 +1,7 @@
 import {$} from './liba'
 import {createRow, createTable} from './Table'
 import {createChart, draw} from './chart'
+import 'regenerator-runtime/runtime'
 import 'normalize.css'
 
 document.addEventListener('DOMContentLoaded', onReady)
@@ -51,32 +52,29 @@ function onReady(e) {
 }
 
 function ganttDiagram(e) {
-	const payload = {
-		permutation: [...document.querySelectorAll('.permutation[data-permutation]')].map(x => +x.textContent),
-		matrix: [...document.querySelectorAll('.table .row-data')].map($row =>
-			[...$row.querySelectorAll('.cell')].map($el =>
-				$el.textContent
-			)
-		)
-	}
-	worker.postMessage({
-		type: 'calc',
-		payload
-	});
+
 
 	$gantt.clear()
 	$gantt.html(createChart(toolsCount, toolsCount * 30))
 
-	const drawData = [...document.querySelectorAll('.table .row-data')].reduce((res, x) => {
+	const matrix = [...document.querySelectorAll('.table .row-data:not(.js-no-data)')].reduce((res, x) => {
 		const mas = []
 		for (let i = 0; i < x.children.length; i++) mas.push(+x.children[i].textContent)
 		res.push(mas)
 		return res;
 	}, [])
 
-	const order = [...document.querySelectorAll('.permutation[contenteditable]')].map(x => +x.textContent - 1)
+	const permutation = [...document.querySelectorAll('.permutation[contenteditable]')].map(x => +x.textContent - 1)
 
-	draw(drawData, order)
+	worker.postMessage({
+		type: 'calc',
+		payload: {
+			matrix,
+			permutation
+		}
+	});
+
+	draw(matrix, permutation)
 }
 
 

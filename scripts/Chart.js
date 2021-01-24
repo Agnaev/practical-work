@@ -1,3 +1,5 @@
+import {applyPermutation} from "./utils"
+
 export function toCell(row) {
     return function(_, col) {
         const id = row + ':' + col
@@ -17,14 +19,36 @@ export function createRow(index, content) {
     <div 
     	class="row" 
     	data-row="${index}"
-	>
-      <div class="row-data">${content}</div>
+    >
+        <div class="row-header ">
+            ${index ?? ''}
+        </div>
+        <div class="row-data">${content}</div>
+    </div>
+  `
+}
+
+function toColumn(col, index) {
+    return `
+    <div 
+      class="column-header tool" 
+      data-col="${index}" 
+    >
+      ${col}
     </div>
   `
 }
 
 export function createChart(colsLength, rowsLength) {
     const rows = []
+
+    const cols = new Array(rowsLength)
+      .fill(0)
+      .map((_, i) => i + 1)
+      .map(toColumn)
+      .join('')
+
+    rows.push(createRow(null, cols))
 
     for (let row = 0; row < colsLength; row++) {
         const cells = new Array(rowsLength)
@@ -40,17 +64,6 @@ export function createChart(colsLength, rowsLength) {
 
 function rndColor() {
     return '#' + Math.random().toString(16).slice(-6)
-}
-
-function applyPermutation(mas, order) {
-    const result = new Array(mas.length).fill(0)
-    for (let i = 0; i < mas.length; i++) {
-        result[i] = new Array(mas[i].length).fill(0)
-        for (let j = 0; j < mas[i].length; j++) {
-            result[i][order[j]] = mas[i][j]
-        }
-    }
-    return result
 }
 
 export function draw(arr, order) {

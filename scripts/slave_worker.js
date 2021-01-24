@@ -1,3 +1,5 @@
+import {applyPermutation} from "./utils"
+import 'regenerator-runtime/runtime'
 
 self.addEventListener('message', function (e) {
     if (e.data.type === 'calc') {
@@ -8,34 +10,43 @@ self.addEventListener('message', function (e) {
 })
 
 function calculateGantt(matrix, permutation) {
-    return {
-        permutation,
-        matrix,
-    }
+    return generatePermutations(permutation)
+      .map(applyPermutation.bind(null, matrix))
+      .map(calc)
 }
 
-// function applyPermutation(mas, order) {
-//     const result = new Array(mas.length).fill(0)
-//     for (let i = 0; i < mas.length; i++) {
-//         result[i] = new Array(mas[i].length).fill(0)
-//         for (let j = 0; j < mas[i].length; j++) {
-//             result[i][order[j]] = mas[i][j]
-//         }
-//     }
-//     return result
-// }
+function generatePermutations(arr, perms = [], len = arr.length) {
+    if (len === 1) perms.push(arr.slice(0))
 
-// function* permutations(elements) {
-//     if (elements.length === 1) {
-//         yield elements;
-//     } else {
-//         let [first, ...rest] = elements;
-//         for (let perm of permutations(rest)) {
-//             for (let i = 0; i < elements.length; i++) {
-//                 let start = perm.slice(0, i);
-//                 let rest = perm.slice(i);
-//                 yield [...start, first, ...rest];
-//             }
-//         }
-//     }
-// }
+    for (let i = 0; i < len; i++) {
+        generatePermutations(arr, perms, len - 1)
+
+        len % 2 // parity dependent adjacent elements swap
+          ? [arr[0], arr[len - 1]] = [arr[len - 1], arr[0]]
+          : [arr[i], arr[len - 1]] = [arr[len - 1], arr[i]]
+    }
+
+    return perms
+}
+
+export function calc(arr) {
+    const lockers = new Array(arr[0].length).fill(0)
+    let result = 0
+    arr.forEach((line, toolNum) => {
+        // const tool = document.querySelectorAll(`.tool[data-row="${toolNum}"]`)
+        let shift = 0
+        line.forEach((renderCount, i) => {
+            if (shift < lockers[i]) {
+                const count = lockers[i] - shift
+                shift += count
+            }
+            for (let j = 0; j < renderCount; j++) {
+                result++
+                shift += 1
+            }
+            lockers[i] = shift
+        })
+        result = shift
+    })
+    return result
+}

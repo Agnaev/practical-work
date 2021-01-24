@@ -14,15 +14,15 @@
     height: 24px;
 }
 
-.row-info {
+.row-header {
     display: flex;
     justify-content: center;
     align-items: center;
     min-width: 40px;
     height: 100%;
-    border: 1px solid #404040;
+    border: 1px solid #C0C0C0;
     background: #f8f9fa;
-    border-top: none;
+    /*border-top: none;*/
     position: relative;
 }
 
@@ -30,7 +30,7 @@
     display: flex;
 }
 
-.column {
+.table .column-header {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -40,6 +40,7 @@
     border-left: none;
     height: 100%;
     position: relative;
+    width: 120px;
 }
 
 .cell {
@@ -54,5 +55,16 @@
     outline: none;
     display: flex;
     align-content: center;
+}
+
+.row-resize {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    opacity: 0;
+    background-color: #e2e3e3;
+    z-index: 1000;
+    left: 4px;
+    height: 4px;
 }
 
