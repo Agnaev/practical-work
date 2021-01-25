@@ -70,7 +70,7 @@ export function draw(arr, order) {
     const colors = new Array(tasksCount).fill('').map(() => rndColor())
     const lockers = new Array(tasksCount).fill(0)
 
-    applyPermutation(arr, order).forEach((line, toolNum) => {
+    applyPermutation(arr, order).matrix.forEach((line, toolNum) => {
         const tool = document.querySelectorAll(`.tool[data-row="${toolNum}"]`)
         let shift = 0
         line.forEach((renderCount, i) => {

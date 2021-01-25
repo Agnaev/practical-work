@@ -45,7 +45,7 @@ function toColumn(col, index) {
 export function createTable(colsLength, rowsLength) {
 	const rows = []
 
-	const cols = new Array(colsLength + 1)
+	const cols = new Array(rowsLength)
 		.fill(0)
 		.map((_, i) => i + 1)
 		.map(toColumn)

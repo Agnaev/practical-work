@@ -14,10 +14,19 @@ class Liba {
 
 	html(html) {
 		if (html) {
+			this.clear()
 			this.$el.innerHTML = html
 			return this
 		}
 		return this.$el.innerHTML
+	}
+
+	text(text) {
+		if (text) {
+			this.$el.innerText = text
+			return this
+		}
+		return this.$el.innerText
 	}
 
 	attr(key, val) {

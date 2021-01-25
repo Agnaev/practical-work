@@ -3,20 +3,36 @@ import 'regenerator-runtime/runtime'
 
 self.addEventListener('message', function (e) {
     if (e.data.type === 'calc') {
-        const {matrix, permutation} = e.data.payload
-        return postMessage(calculateGantt(matrix, permutation))
+        return postMessage(calculateGantt(e.data.payload))
     }
     postMessage(e.data)
 })
 
-function calculateGantt(matrix, permutation) {
+function calculateGantt({matrix, permutation}) {
     return generatePermutations(permutation)
       .map(applyPermutation.bind(null, matrix))
       .map(calc)
+        .reduce((minProcessing, {result, order}) => {
+            if (minProcessing.length === 0 || minProcessing[0].result > result) {
+                return [{
+                    result,
+                    order
+                }]
+            }
+            if (minProcessing[0].result === result) {
+                minProcessing.push({
+                    result,
+                    order
+                })
+            }
+            return minProcessing
+        }, [])
 }
 
 function generatePermutations(arr, perms = [], len = arr.length) {
-    if (len === 1) perms.push(arr.slice(0))
+    if (len === 1) {
+        perms.push(arr.slice(0))
+    }
 
     for (let i = 0; i < len; i++) {
         generatePermutations(arr, perms, len - 1)
@@ -29,24 +45,21 @@ function generatePermutations(arr, perms = [], len = arr.length) {
     return perms
 }
 
-export function calc(arr) {
-    const lockers = new Array(arr[0].length).fill(0)
-    let result = 0
-    arr.forEach((line, toolNum) => {
-        // const tool = document.querySelectorAll(`.tool[data-row="${toolNum}"]`)
-        let shift = 0
-        line.forEach((renderCount, i) => {
+export function calc({matrix, order}) {
+    const lockers = new Array(matrix[0].length).fill(0)
+    let result
+    for (const line of matrix) {
+        result = line.reduce((shift, renderCount, i) => {
             if (shift < lockers[i]) {
-                const count = lockers[i] - shift
-                shift += count
+                shift += lockers[i] - shift
             }
-            for (let j = 0; j < renderCount; j++) {
-                result++
-                shift += 1
-            }
+            shift += renderCount
             lockers[i] = shift
-        })
-        result = shift
-    })
-    return result
+            return shift
+        }, 0)
+    }
+    return {
+        result,
+        order
+    }
 }

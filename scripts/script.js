@@ -1,5 +1,5 @@
 import {$} from './liba'
-import {createRow, createTable} from './Table'
+import {createTable} from './Table'
 import {createChart, draw} from './chart'
 import 'regenerator-runtime/runtime'
 import 'normalize.css'
@@ -7,29 +7,14 @@ import 'normalize.css'
 document.addEventListener('DOMContentLoaded', onReady)
 
 window.$table = $('.table')
-window.$permutation = $('.permutation')
 window.$gantt = $('.gantt')
 window.$draw = $('#drawChart')
 
 $draw.on('click', ganttDiagram)
 
 function onReady(e) {
-	window.toolsCount = 3 || +prompt('Tools count:')
-	window.tasksCount = 4 || +prompt('Tasks count:')
-
-	$permutation.html(
-		createRow(0, new Array(tasksCount)
-			.fill('')
-			.map((_, i) => `
-				<div
-					contenteditable="true"
-					class="permutation"
-					data-permutation="${i}"
-				>${i + 1}</div>
-			`)
-			.join('')
-		)
-	)
+	window.toolsCount = 2 || +prompt('Tools count:')
+	window.tasksCount = 3 || +prompt('Tasks count:')
 
 	$table.html(
 		createTable(toolsCount, tasksCount)
@@ -44,27 +29,20 @@ function onReady(e) {
 	window.worker = new Worker('slave_worker.js');
 
 	worker.addEventListener('message', function (e) {
-		console.log('Response:', JSON.stringify(e.data))
+		const {order, result} = e.data[e.data.length - 1]
+		$gantt.html(createChart(toolsCount, result + 1))
+		draw(matrix, order)
+
+		$('.output .result').text('Время на обработку всех деталей: ' + result)
+		$('.output .permutation').text('Порядок деталей: ' + order.toString())
 	})
-
-	// $gantt.html(createChart(toolsCount, toolsCount * 30))
-
 }
 
 function ganttDiagram(e) {
+	window.matrix = [...document.querySelectorAll('.table .row-data:not(.js-no-data)')]
+		.map(x => [...x.children].map(x => +x.textContent))
 
-
-	$gantt.clear()
-	$gantt.html(createChart(toolsCount, toolsCount * 30))
-
-	const matrix = [...document.querySelectorAll('.table .row-data:not(.js-no-data)')].reduce((res, x) => {
-		const mas = []
-		for (let i = 0; i < x.children.length; i++) mas.push(+x.children[i].textContent)
-		res.push(mas)
-		return res;
-	}, [])
-
-	const permutation = [...document.querySelectorAll('.permutation[contenteditable]')].map(x => +x.textContent - 1)
+	const permutation = new Array(tasksCount).fill(0).map((_, i) => i + 1)
 
 	worker.postMessage({
 		type: 'calc',
@@ -73,8 +51,6 @@ function ganttDiagram(e) {
 			permutation
 		}
 	});
-
-	draw(matrix, permutation)
 }
 
 
