@@ -1,7 +1,6 @@
 import {$} from './liba'
 import {createTable} from './Table'
 import {createChart, draw} from './chart'
-import 'regenerator-runtime/runtime'
 import 'normalize.css'
 
 document.addEventListener('DOMContentLoaded', onReady)
@@ -13,8 +12,8 @@ window.$draw = $('#drawChart')
 $draw.on('click', ganttDiagram)
 
 function onReady(e) {
-	window.toolsCount = 2 || +prompt('Tools count:')
-	window.tasksCount = 3 || +prompt('Tasks count:')
+	window.toolsCount = 6 || +prompt('Tools count:')
+	window.tasksCount = 7 || +prompt('Tasks count:')
 
 	$table.html(
 		createTable(toolsCount, tasksCount)
@@ -29,12 +28,19 @@ function onReady(e) {
 	window.worker = new Worker('slave_worker.js');
 
 	worker.addEventListener('message', function (e) {
-		const {order, result} = e.data[e.data.length - 1]
-		$gantt.html(createChart(toolsCount, result + 1))
-		draw(matrix, order)
+		console.log(e.data)
+		if (e.data.type === 'calc') {
+			const {time, data} = e.data
+			const {order, result} = data[data.length - 1];
+			$gantt.html(createChart(toolsCount, result + 1))
+			draw(matrix, order)
 
-		$('.output .result').text('Время на обработку всех деталей: ' + result)
-		$('.output .permutation').text('Порядок деталей: ' + order.toString())
+			console.log('execution time is:', time)
+
+			$('.output .result').text('Время на обработку всех деталей: ' + result)
+			$('.output .permutation').text('Порядок деталей: ' + order.toString())
+		}
+
 	})
 }
 
@@ -52,5 +58,3 @@ function ganttDiagram(e) {
 		}
 	});
 }
-
-

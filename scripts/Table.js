@@ -5,41 +5,41 @@ export function toCell(row) {
 		}
 		const id = row + ':' + col
 		return `
-      <div 
-        class="cell" 
-        contenteditable="true"
-        data-id="${id}"
-        data-row="${row}"
-        data-col="${col}"
-      >${row === 0 ? '' : row}${col}</div>
-    `
+			<div 
+				class="cell" 
+				contenteditable="true"
+				data-id="${id}"
+				data-row="${row}"
+				data-col="${col}"
+			>${row === 0 ? '' : row}${col}</div>
+		`
 	}
 }
 
 export function createRow(index, content) {
 	const orderNum = index !== null ? index + 1 : ''
 	return `
-    <div 
-    	class="row" 
-    	data-row="${index}"
+		<div 
+			class="row" 
+			data-row="${index}"
 		>
 			<div class="row-header ">
-        ${orderNum}
-      </div>
-      <div class="row-data ${index ?? 'js-no-data'}">${content}</div>
-    </div>
-  `
+				${orderNum}
+			</div>
+			<div class="row-data ${index ?? 'js-no-data'}">${content}</div>
+		</div>
+  	`
 }
 
 function toColumn(col, index) {
 	return `
-    <div 
-      class="column-header" 
-      data-col="${index}" 
-    >
-      ${col}
-    </div>
-  `
+		<div 
+			class="column-header" 
+			data-col="${index}" 
+		>
+			${col}
+		</div>
+	`
 }
 
 export function createTable(colsLength, rowsLength) {

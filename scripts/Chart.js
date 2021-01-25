@@ -4,39 +4,39 @@ export function toCell(row) {
     return function(_, col) {
         const id = row + ':' + col
         return `
-          <div 
-            class="tool"
-            data-row="${row}"
-            data-col="${col}"
-            data-id="${id}"
-          ></div>
+            <div 
+                class="tool"
+                data-row="${row}"
+                data-col="${col}"
+                data-id="${id}"
+            ></div>
         `
     }
 }
 
 export function createRow(index, content) {
     return `
-    <div 
-    	class="row" 
-    	data-row="${index}"
-    >
-        <div class="row-header ">
-            ${index ?? ''}
+        <div 
+            class="row" 
+            data-row="${index}"
+        >
+            <div class="row-header ">
+                ${index ?? ''}
+            </div>
+            <div class="row-data">${content}</div>
         </div>
-        <div class="row-data">${content}</div>
-    </div>
-  `
+    `
 }
 
 function toColumn(col, index) {
     return `
-    <div 
-      class="column-header tool" 
-      data-col="${index}" 
-    >
-      ${col}
-    </div>
-  `
+        <div 
+            class="column-header tool" 
+            data-col="${index}" 
+        >
+            ${col}
+        </div>
+    `
 }
 
 export function createChart(colsLength, rowsLength) {
@@ -67,7 +67,7 @@ function rndColor() {
 }
 
 export function draw(arr, order) {
-    const colors = new Array(tasksCount).fill('').map(() => rndColor())
+    const colors = new Array(tasksCount).fill('').map(rndColor)
     const lockers = new Array(tasksCount).fill(0)
 
     applyPermutation(arr, order).matrix.forEach((line, toolNum) => {
@@ -84,6 +84,5 @@ export function draw(arr, order) {
             }
             lockers[i] = shift
         })
-
     })
 }
