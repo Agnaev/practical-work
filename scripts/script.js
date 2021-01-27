@@ -1,6 +1,7 @@
 import {$} from './liba'
-import {createTable} from './Table'
-import {createChart, draw} from './chart'
+import {DataTable} from './DataTable'
+import {DrawTable} from './DrawTable'
+
 import 'normalize.css'
 
 document.addEventListener('DOMContentLoaded', onReady)
@@ -9,6 +10,9 @@ $('#drawChart').on('click', ganttDiagram)
 $('#fillRandom').on('click', fillRandom)
 
 function onReady(e) {
+	const dataTable = new DataTable()
+	const drawTable = new DrawTable()
+
 	window.toolsCount = 6 || +prompt('Tools count:')
 	window.tasksCount = 6 || +prompt('Tasks count:')
 
@@ -16,7 +20,7 @@ function onReady(e) {
 	const $gantt = $('.gantt')
 
 	$table.html(
-		createTable(toolsCount, tasksCount)
+		dataTable.createTable(toolsCount, tasksCount)
 	)
 	$('.buttons').css({
 		marginTop: $table.getClientRect().height + 100 + 'px'
@@ -32,8 +36,8 @@ function onReady(e) {
 			const {time, data} = e.data
 			const {order, result} = data[data.length - 1];
 
-			$gantt.html(createChart(toolsCount, result + 1))
-			draw(matrix, order)
+			$gantt.html(drawTable.createTable(toolsCount, result + 1))
+			drawTable.draw(matrix, order)
 
 			console.log('print order is', order, result)
 			console.log('execution time is:', time)
