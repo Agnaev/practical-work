@@ -1,12 +1,12 @@
 import {applyPermutation} from "./utils"
-import 'regenerator-runtime/runtime'
 
 self.addEventListener('message', function (e) {
     const {type} = e.data
     if (type === 'calc') {
-        const start = Date.now()
-        const data = calculateGantt(e.data.payload)
-        const end = Date.now()
+        const {matrix, permutationsLength} = e.data.payload
+        const start = performance.now()
+        const data = calculateGantt(matrix, permutationsLength)
+        const end = performance.now()
         return postMessage({
             type,
             time: end - start,
@@ -16,43 +16,27 @@ self.addEventListener('message', function (e) {
     postMessage(e.data)
 })
 
-function calculateGantt({matrix, permutation}) {
-    let response = []
-    for (const order of lazyGenerate(matrix[0].length)) {
-        const {matrix: permuted} = applyPermutation(matrix, order)
-        const {result} = calc({matrix: permuted, order})
-        if (response.length === 0 || response[0].result > calc) {
-            response = [{
-                order,
-                result
-            }]
+function calculateGantt(matrix, permutationsLength) {
+    const permutationsInit = new Array(permutationsLength).fill(0).map((_, i) => i + 1)
+    const permutations = generatePermutations(permutationsInit)
+    const result = []
+    for (const permutation of permutations) {
+        const permutedArray = applyPermutation(matrix, permutation)
+        const calculatedValue = calc(permutedArray)
+        if (result.length === 0 || result[0].result > calculatedValue) {
+            result.splice(0, result.length, {
+                result: calculatedValue,
+                order: permutation
+            })
         }
-        else if (response[0].result === calc) {
-            response.push({
-                order,
-                result
+        else if (result[0].result === calculatedValue) {
+            result.push({
+                result: calculatedValue,
+                order: permutation
             })
         }
     }
-    return response
-    return generatePermutations(permutation)
-      .map(applyPermutation.bind(null, matrix))
-      .map(calc)
-        .reduce((minProcessing, {result, order}) => {
-            if (minProcessing.length === 0 || minProcessing[0].result > result) {
-                return [{
-                    result,
-                    order
-                }]
-            }
-            if (minProcessing[0].result === result) {
-                minProcessing.push({
-                    result,
-                    order
-                })
-            }
-            return minProcessing
-        }, [])
+    return result
 }
 
 function generatePermutations(arr, perms = [], len = arr.length) {
@@ -71,26 +55,7 @@ function generatePermutations(arr, perms = [], len = arr.length) {
     return perms
 }
 
-function* lazyGenerate(length) {
-    const res = [[]];
-    const a = new Array(length).fill(0).map((_, i ) => i + 1)
-    for (let i = 0; i < a.length; i++){
-        while(res[res.length - 1].length === i){
-            const l = res.pop();
-            for (let j = 0; j <= l.length; j++){
-                let copy = l.slice();
-                copy.splice(j,0, a[i]);
-                if (a.length === copy.length) {
-                    yield copy
-                }
-                res.unshift(copy);
-            }
-        }
-    }
-    return res;
-}
-
-export function calc({matrix, order}) {
+export function calc(matrix) {
     const lockers = new Array(matrix[0].length).fill(0)
     let result
     for (const line of matrix) {
@@ -103,8 +68,5 @@ export function calc({matrix, order}) {
             return shift
         }, 0)
     }
-    return {
-        result,
-        order
-    }
+    return result
 }

@@ -1,14 +1,12 @@
-export function toCell(row) {
+function toCell(row) {
 	return function(_, col) {
 		if (row === 0 && col === 0) {
 			col = 1
 		}
-		const id = row + ':' + col
 		return `
 			<div 
 				class="cell" 
 				contenteditable="true"
-				data-id="${id}"
 				data-row="${row}"
 				data-col="${col}"
 			>${row === 0 ? '' : row}${col}</div>
@@ -17,7 +15,7 @@ export function toCell(row) {
 }
 
 export function createRow(index, content) {
-	const orderNum = index !== null ? index + 1 : ''
+	const orderNum = index ? index + 1 : ''
 	return `
 		<div 
 			class="row" 
@@ -31,16 +29,14 @@ export function createRow(index, content) {
   	`
 }
 
-function toColumn(col, index) {
-	return `
-		<div 
-			class="column-header" 
-			data-col="${index}" 
-		>
-			${col}
-		</div>
-	`
-}
+export const toColumn = (col, index) => `
+	<div 
+		class="column-header" 
+		data-col="${index}" 
+	>
+		${col}
+	</div>
+`
 
 export function createTable(colsLength, rowsLength) {
 	const rows = []

@@ -1,43 +1,36 @@
 import {applyPermutation} from "./utils"
+import {$} from './liba'
 
-export function toCell(row) {
-    return function(_, col) {
-        const id = row + ':' + col
-        return `
-            <div 
-                class="tool"
-                data-row="${row}"
-                data-col="${col}"
-                data-id="${id}"
-            ></div>
-        `
-    }
-}
-
-export function createRow(index, content) {
-    return `
+const toCell = row => {
+    return (_, col) => `
         <div 
-            class="row" 
-            data-row="${index}"
-        >
-            <div class="row-header ">
-                ${index ?? ''}
-            </div>
-            <div class="row-data">${content}</div>
-        </div>
+            class="tool"
+            data-row="${row}"
+            data-col="${col}"
+        ></div>
     `
 }
 
-function toColumn(col, index) {
-    return `
-        <div 
-            class="column-header tool" 
-            data-col="${index}" 
-        >
-            ${col}
+const createRow = (index, content) => `
+    <div 
+        class="row" 
+        data-row="${index}"
+    >
+        <div class="row-header ">
+            ${index ?? ''}
         </div>
-    `
-}
+        <div class="row-data">${content}</div>
+    </div>
+`
+
+const toColumn = (col, index) => `
+    <div 
+        class="column-header tool" 
+        data-col="${index}" 
+    >
+        ${col}
+    </div>
+`
 
 export function createChart(colsLength, rowsLength) {
     const rows = []
@@ -70,7 +63,7 @@ export function draw(arr, order) {
     const colors = new Array(tasksCount).fill('').map(rndColor)
     const lockers = new Array(tasksCount).fill(0)
 
-    applyPermutation(arr, order).matrix.forEach((line, toolNum) => {
+    applyPermutation(arr, order).forEach((line, toolNum) => {
         const tool = document.querySelectorAll(`.tool[data-row="${toolNum}"]`)
         let shift = 0
         line.forEach((renderCount, i) => {
@@ -79,7 +72,9 @@ export function draw(arr, order) {
                 shift += count
             }
             for (let j = 0; j < renderCount; j++) {
-                tool[shift].style.backgroundColor = colors[i]
+                $(tool[shift]).css({
+                    backgroundColor: colors[i]
+                })
                 shift += 1
             }
             lockers[i] = shift

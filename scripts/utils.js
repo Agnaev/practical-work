@@ -1,13 +1,13 @@
 export function applyPermutation(mas, order) {
-	const result = new Array(mas.length).fill(0)
+	if (!order) {
+		return mas
+	}
+	const result = new Array(mas.length).fill(void 0)
 	for (let i = 0; i < mas.length; i++) {
-		result[i] = new Array(mas[i].length).fill(0)
+		result[i] = new Array(mas.length).fill(void 0)
 		for (let j = 0; j < mas[i].length; j++) {
-			result[i][order[j] - 1] = mas[i][j]
+			result[i][j] = mas[i][order[j] - 1]
 		}
 	}
-	return {
-		matrix: result,
-		order
-	}
+	return result
 }

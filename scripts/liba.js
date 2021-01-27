@@ -76,5 +76,3 @@ class Liba {
 export function $(selector) {
 	return new Liba(selector)
 }
-
-window.$ = $
