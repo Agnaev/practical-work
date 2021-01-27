@@ -1,6 +1,7 @@
 import {$} from './liba'
 import {DataTable} from './DataTable'
 import {DrawTable} from './DrawTable'
+import {loader} from './loader'
 
 import 'normalize.css'
 
@@ -10,11 +11,13 @@ $('#drawChart').on('click', ganttDiagram)
 $('#fillRandom').on('click', fillRandom)
 
 function onReady(e) {
+	loader.hide()
+
 	const dataTable = new DataTable()
 	const drawTable = new DrawTable()
 
-	window.toolsCount = 6 || +prompt('Tools count:')
-	window.tasksCount = 6 || +prompt('Tasks count:')
+	window.toolsCount = 10 || +prompt('Tools count:')
+	window.tasksCount = 10 || +prompt('Tasks count:')
 
 	const $table = $('.table')
 	const $gantt = $('.gantt')
@@ -30,8 +33,8 @@ function onReady(e) {
 		return alert('You need to use modern browser.')
 	}
 
-	window.worker = new Worker('slave_worker.js');
-	worker.addEventListener('message', function (e) {
+	window.slave = new Worker('slave_worker.js');
+	slave.addEventListener('message', function (e) {
 		if (e.data.type === 'calc') {
 			const {time, data} = e.data
 			const {order, result} = data[data.length - 1];
@@ -44,15 +47,19 @@ function onReady(e) {
 
 			$('.output .result').text('Time to process all details: ' + result)
 			$('.output .permutation').text('Parts order: ' + order.toString())
+
+			loader.hide()
 		}
 	})
 }
 
 function ganttDiagram(e) {
+	loader.show()
+
 	window.matrix = [...document.querySelectorAll('.table .row-data:not(.js-no-data)')]
 		.map(x => [...x.children].map(x => +x.textContent))
 
-	worker.postMessage({
+	slave.postMessage({
 		type: 'calc',
 		payload: {
 			matrix,

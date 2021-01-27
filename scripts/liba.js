@@ -37,6 +37,10 @@ class Liba {
 		return this.$el.getAttribute(key)
 	}
 
+	rmAttr(key) {
+		this.$el.removeAttribute(key)
+	}
+
 	getClientRect() {
 		return this.$el.getBoundingClientRect()
 	}
