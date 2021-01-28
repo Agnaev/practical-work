@@ -16,8 +16,8 @@ function onReady(e) {
 	const dataTable = new DataTable()
 	const drawTable = new DrawTable()
 
-	window.toolsCount = 10 || +prompt('Tools count:')
-	window.tasksCount = 10 || +prompt('Tasks count:')
+	window.toolsCount = 3 || +prompt('Tools count:')
+	window.tasksCount = 3 || +prompt('Tasks count:')
 
 	const $table = $('.table')
 	const $gantt = $('.gantt')
@@ -37,7 +37,7 @@ function onReady(e) {
 	slave.addEventListener('message', function (e) {
 		if (e.data.type === 'calc') {
 			const {time, data} = e.data
-			const {order, result} = data[data.length - 1];
+			const {order, result} = data[0];
 
 			$gantt.html(drawTable.createTable(toolsCount, result + 1))
 			drawTable.draw(matrix, order)
@@ -51,6 +51,8 @@ function onReady(e) {
 			loader.hide()
 		}
 	})
+
+	slave.addEventListener('error', loader.hide)
 }
 
 function ganttDiagram(e) {
