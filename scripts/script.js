@@ -4,7 +4,7 @@ import {DrawTable} from './DrawTable'
 import {loader} from './loader'
 
 import 'normalize.css'
-
+window.table = DataTable
 document.addEventListener('DOMContentLoaded', onReady)
 
 $('#drawChart').on('click', ganttDiagram)
@@ -41,11 +41,60 @@ function onReady(e) {
 			console.log('print order is %o\r\nResult is: %d\r\nExecution time is: %f', final_path, final_res, time)
 
 			$('.output .result').text('Time to process all details: ' + final_res)
-			$('.output .permutation').text('Parts order: ' + final_path)
+			$('.output .permutation').text('Parts order: ' + final_path.join(' => '))
+
+			$('.container').clear()
+
+			const series = getMas(final_path)
+				.map(
+					({from, to, value}) => ({
+						name: `Переход ${from} => ${to}`,
+						data: [value]
+					})
+				)
+
+			Highcharts.chart('container', {
+				chart: {
+					type: 'bar'
+				},
+				title: {
+					text: 'Stacked bar chart'
+				},
+				xAxis: {
+					categories: ['Apples']
+				},
+				yAxis: {
+					min: 0,
+					title: {
+						text: 'Порядок обработки деталей на станке'
+					}
+				},
+				legend: {
+					reversed: true
+				},
+				plotOptions: {
+					series: {
+						stacking: 'normal'
+					}
+				},
+				series
+			});
 
 			loader.hide()
 		}
 	})
+
+	function getMas(indexes) {
+		const result = []
+		for (let i = 0; i < indexes.length - 1; ++i) {
+			result.unshift({
+				from: indexes[i],
+				to: indexes[i + 1],
+				value: matrix[indexes[i] - 1][indexes[i + 1] - 1]
+			})
+		}
+		return result
+	}
 
 	slave.addEventListener('error', loader.hide)
 }

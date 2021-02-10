@@ -65,26 +65,20 @@ export class DrawTable extends Table {
         return '#' + Math.random().toString(16).slice(-6)
     }
 
-    draw(arr, order) {
+    draw(arr) {
         const colors = new Array(tasksCount).fill('').map(this.rndColor)
-        const lockers = new Array(tasksCount).fill(0)
+        const line = document.querySelectorAll('.gantt .tool:not(.column-header)')
+        let drawedCount = 0
+        let colorPicker = 0
 
-        applyPermutation(arr, order).forEach((line, toolNum) => {
-            const tool = document.querySelectorAll(`.tool[data-row="${toolNum}"]`)
-            let shift = 0
-            line.forEach((renderCount, i) => {
-                if (shift < lockers[i]) {
-                    const count = lockers[i] - shift
-                    shift += count
-                }
-                for (let j = 0; j < renderCount; j++) {
-                    $(tool[shift]).css({
-                        backgroundColor: colors[i]
-                    })
-                    shift += 1
-                }
-                lockers[i] = shift
-            })
-        })
+        for (const drawLength of arr) {
+            for (let i = drawedCount; i < drawedCount + drawLength; i++) {
+                $(line[i]).css({
+                    backgroundColor: colors[colorPicker]
+                })
+            }
+            ++colorPicker
+            drawedCount += drawLength
+        }
     }
 }

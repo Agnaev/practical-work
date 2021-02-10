@@ -3,10 +3,12 @@ import {isNil} from './utils'
 
 export class DataTable extends Table {
     createCell(row) {
-        return function (_, col) {
-           const content = row === col
-            ? 0
-            : (Math.random() * 100 + 10).toFixed()
+        return function (_, col, content = void 0) {
+           if (isNil(content) || Array.isArray(content)) {
+               content = row === col
+                 ? 0
+                 : (Math.random() * 100 + 10).toFixed()
+           }
 
             return `
                 <div 
