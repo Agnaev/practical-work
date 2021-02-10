@@ -11,3 +11,11 @@ export function applyPermutation(mas, order) {
 	}
 	return result
 }
+
+export function isNil(val) {
+	return val === null || val === void 0
+}
+
+export function createArray(length = 0, filler) {
+	return new Array(length).fill(filler)
+}

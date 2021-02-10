@@ -1,24 +1,26 @@
 import {Table} from './Table'
+import {isNil} from './utils'
 
 export class DataTable extends Table {
     createCell(row) {
         return function (_, col) {
-            if (row === 0 && col === 0) {
-                col = 1
-            }
+           const content = row === col
+            ? 0
+            : (Math.random() * 100 + 10).toFixed()
+
             return `
-			<div 
-				class="cell" 
-				contenteditable="true"
-				data-row="${row}"
-				data-col="${col}"
-			>${row === 0 ? '' : row}${col}</div>
-		`
+                <div 
+                    class="cell" 
+                    contenteditable="true"
+                    data-row="${row}"
+                    data-col="${col}"
+                >${content}</div>
+            `
         }
     }
 
     createRow(index, content) {
-        const orderNum = index ? index + 1 : ''
+        const orderNum = isNil(index) ? '' : index + 1
         return `
 			<div 
 				class="row" 

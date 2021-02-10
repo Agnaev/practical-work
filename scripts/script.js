@@ -14,16 +14,15 @@ function onReady(e) {
 	loader.hide()
 
 	const dataTable = new DataTable()
-	const drawTable = new DrawTable()
+	// const drawTable = new DrawTable()
 
-	window.toolsCount = 3 || +prompt('Tools count:')
 	window.tasksCount = 3 || +prompt('Tasks count:')
 
 	const $table = $('.table')
-	const $gantt = $('.gantt')
+	// const $gantt = $('.gantt')
 
 	$table.html(
-		dataTable.createTable(toolsCount, tasksCount)
+		dataTable.createTable(tasksCount, tasksCount)
 	)
 	$('.buttons').css({
 		marginTop: $table.getClientRect().height + 100 + 'px'
@@ -37,16 +36,12 @@ function onReady(e) {
 	slave.addEventListener('message', function (e) {
 		if (e.data.type === 'calc') {
 			const {time, data} = e.data
-			const {order, result} = data[0];
+			const {final_path, final_res} = data;
 
-			$gantt.html(drawTable.createTable(toolsCount, result + 1))
-			drawTable.draw(matrix, order)
+			console.log('print order is %o\r\nResult is: %d\r\nExecution time is: %f', final_path, final_res, time)
 
-			console.log('print order is', order, result)
-			console.log('execution time is:', time)
-
-			$('.output .result').text('Time to process all details: ' + result)
-			$('.output .permutation').text('Parts order: ' + order.toString())
+			$('.output .result').text('Time to process all details: ' + final_res)
+			$('.output .permutation').text('Parts order: ' + final_path)
 
 			loader.hide()
 		}
@@ -65,12 +60,16 @@ function ganttDiagram(e) {
 		type: 'calc',
 		payload: {
 			matrix,
-			permutationsLength: tasksCount
 		}
 	});
 }
 
 function fillRandom(e) {
 	[...document.querySelectorAll('.table .row-data:not(.js-no-data)')]
-		.map(x => [...x.children].map(x => x.textContent = Math.random().toString().slice(2, 4)))
+		.map((x, i) => [...x.children].forEach((x, j) => {
+			x.textContent = i !== j
+				? (Math.random() * 100 + 10).toFixed()
+				: 0
+		}))
+
 }
