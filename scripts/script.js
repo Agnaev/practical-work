@@ -40,28 +40,30 @@ function onReady(e) {
 
 			console.log('print order is %o\r\nResult is: %d\r\nExecution time is: %f', final_path, final_res, time)
 
-			$('.output .result').text('Time to process all details: ' + final_res)
-			$('.output .permutation').text('Parts order: ' + final_path.join(' => '))
-
-			$('.container').clear()
-
-			const series = getMas(final_path)
-				.map(
+			const mas = getMas(final_path)
+			const series = mas.slice(1).map(
 					({from, to, value}) => ({
 						name: `Переход ${from} => ${to}`,
 						data: [value]
 					})
 				)
 
+			$('.output .result').text('Time to process all details: ' + mas.slice(1).reduce((a, b) => a + b.value, 0))
+			$('.output .permutation').text('Parts order: ' + final_path.splice(0, final_path.length - 1).join(' => '))
+
+			$('.container').clear()
+
+
+
 			Highcharts.chart('container', {
 				chart: {
 					type: 'bar'
 				},
 				title: {
-					text: 'Stacked bar chart'
+					text: ''
 				},
 				xAxis: {
-					categories: ['Apples']
+					categories: ['Станок']
 				},
 				yAxis: {
 					min: 0,
