@@ -1,4 +1,7 @@
-export function applyPermutation(mas, order) {
+export function applyPermutation(
+	mas: number[][],
+	order: number[]
+) {
 	if (!order) {
 		return mas
 	}
@@ -12,10 +15,10 @@ export function applyPermutation(mas, order) {
 	return result
 }
 
-export function isNil(val) {
+export function isNil(val: unknown) {
 	return val === null || val === void 0
 }
 
-export function createArray(length = 0, filler) {
+export function createArray(length = 0, filler: any) {
 	return new Array(length).fill(filler)
 }

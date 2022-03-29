@@ -1,7 +1,11 @@
-import {$} from './liba'
+import { $ } from './liba'
+import type { Liba } from './liba'
 
-const $loader = $('.loader')
-const buttons = ['#drawChart', '#fillRandom'].map(selector => $(selector))
+const $loader: Liba = $('.loader')
+const buttons: Liba[] = [
+    '#drawChart',
+    '#fillRandom'
+].map($)
 
 function show() {
     buttons.map(el => el.attr('disabled', 'disabled'))

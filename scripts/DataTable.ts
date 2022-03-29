@@ -1,9 +1,12 @@
-import {Table} from './Table'
-import {isNil} from './utils'
+import { isNil } from './utils'
 
-export class DataTable extends Table {
-    createCell(row) {
-        return function (_, col, content = void 0) {
+export class DataTable {
+    createCell(row: number) {
+        return function (
+            _: number,
+            col: number,
+            content: undefined|string|number|Array<string> = void 0
+        ): string {
            if (isNil(content) || Array.isArray(content)) {
                content = row === col
                  ? 0
@@ -21,8 +24,13 @@ export class DataTable extends Table {
         }
     }
 
-    createRow(index, content) {
-        const orderNum = isNil(index) ? '' : index + 1
+    createRow(
+        index: number|null,
+        content: string
+    ): string {
+        const orderNum = isNil(index)
+            ? ''
+            : index as number + 1
         return `
 			<div 
 				class="row" 
@@ -36,7 +44,10 @@ export class DataTable extends Table {
 		`
     }
 
-    createColumn(col, index) {
+    createColumn(
+        col: number,
+        index: number
+    ) {
         return `
 			<div 
 				class="column-header" 
@@ -47,7 +58,10 @@ export class DataTable extends Table {
 		`
     }
 
-    createTable(colsLength, rowsLength) {
+    createTable(
+        colsLength: number,
+        rowsLength: number
+    ) {
         const rows = []
 
         const cols = new Array(rowsLength)

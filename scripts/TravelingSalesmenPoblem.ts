@@ -1,15 +1,26 @@
-import {createArray} from './utils'
+import { createArray } from './utils'
+
+type List<T = number> = T[]
+type Matrix = List[]
 
 // Function to copy temporary solution to
 // the final solution
-function copyToFinal(from, to, length) {
+function copyToFinal(
+    from: List,
+    to: List,
+    length: number
+) {
     to.splice(0, length + 1, ...from)
     to[length] = from[0]
 }
 
 // function to find the second minimum edge cost
 // having an end at the vertex i
-function secondMin(adj, i, length) {
+function secondMin(
+    adj: Matrix,
+    i: number,
+    length: number
+): number {
     let first = Infinity
     let second = Infinity;
     for (let j = 0; j < length; j++)
@@ -30,7 +41,11 @@ function secondMin(adj, i, length) {
 
 // Function to find the minimum edge cost
 // having an end at the vertex i
-function firstMin(adj, i, length) {
+function firstMin(
+    adj: Matrix,
+    i: number,
+    length: number
+): number {
     let min = Infinity
     for (let k = 0; k < length; k++) {
         if (adj[i][k] < min && i !== k) {
@@ -40,18 +55,18 @@ function firstMin(adj, i, length) {
     return min
 }
 
-export const TravelingSalesmanProblem = matrix => {
+export const TravelingSalesmanProblem = (matrix: Matrix) => {
     const VERTEXES_COUNT = matrix.length
     // final_path[] stores the final solution ie, the
     // path of the salesman.
-    let final_path
+    let final_path: List
 
     // visited[] keeps track of the already visited nodes
     // in a particular path
-    let visited
+    let visited: List<boolean>
 
     // Stores the final minimum weight of shortest tour.
-    let final_res
+    let final_res: number
 
     // function that takes as arguments:
     // curr_bound -> lower bound of the root node
@@ -60,7 +75,13 @@ export const TravelingSalesmanProblem = matrix => {
     //		 space tree
     // curr_path[] -> where the solution is being stored which
     //			 would later be copied to final_path[]
-    function TSPRec(adj, curr_bound, curr_weight, level, curr_path) {
+    function TSPRec(
+        adj: Matrix,
+        curr_bound: number,
+        curr_weight: number,
+        level: number,
+        curr_path: List
+    ) {
         // base case is when we have reached level N which
         // means we have covered all the nodes once
         if (level === VERTEXES_COUNT) {
@@ -95,7 +116,13 @@ export const TravelingSalesmanProblem = matrix => {
                 // different computation of curr_bound for
                 // level 2 from the other levels
                 const fn = level === 1 ? firstMin : secondMin
-                curr_bound -= (fn(adj, curr_path[level - 1], VERTEXES_COUNT) + firstMin(adj, i, VERTEXES_COUNT)) / 2
+                curr_bound -= (
+                    fn(
+                        adj,
+                        curr_path[level - 1],
+                        VERTEXES_COUNT
+                    ) + firstMin(adj, i, VERTEXES_COUNT)
+                ) / 2
 
                 // curr_bound + curr_weight is the actual lower bound
                 // for the node that we have arrived on
@@ -125,7 +152,9 @@ export const TravelingSalesmanProblem = matrix => {
     }
 
     // This function sets up final_path[]
-    function TSP(adj) {
+    function TSP(
+        adj: Matrix
+    ) {
         const curr_path = createArray(VERTEXES_COUNT + 1,-1)
 
         // Calculate initial lower bound for the root node

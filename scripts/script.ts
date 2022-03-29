@@ -1,39 +1,43 @@
-import {$} from './liba'
-import {DataTable} from './DataTable'
-import {DrawTable} from './DrawTable'
-import {loader} from './loader'
+import { $ } from './liba'
+import { DataTable } from './DataTable'
+import { loader } from './loader'
 
 import 'normalize.css'
+// @ts-ignore
 window.table = DataTable
 document.addEventListener('DOMContentLoaded', onReady)
 
 $('#drawChart').on('click', ganttDiagram)
 $('#fillRandom').on('click', fillRandom)
 
-function onReady(e) {
+function onReady() {
 	loader.hide()
 
 	const dataTable = new DataTable()
 	// const drawTable = new DrawTable()
 
-	window.tasksCount = 3 || +prompt('Tasks count:')
+	// @ts-ignore
+	window.tasksCount = 5 || +prompt('Tasks count:')
 
 	const $table = $('.table')
 	// const $gantt = $('.gantt')
 
 	$table.html(
-		dataTable.createTable(tasksCount, tasksCount)
+		// @ts-ignore
+		dataTable.createTable(window.tasksCount, window.tasksCount)
 	)
 	$('.buttons').css({
-		marginTop: $table.getClientRect().height + 100 + 'px'
+		marginTop: ($table.getClientRect() as DOMRect).height + 100 + 'px'
 	})
 
 	if (!('Worker' in window)) {
 		return alert('You need to use modern browser.')
 	}
 
-	window.slave = new Worker('slave_worker.js');
-	slave.addEventListener('message', function (e) {
+	// @ts-ignore
+	window.slave = new Worker('slave_worker.ts')
+	// @ts-ignore
+	winsow.slave.addEventListener('message', function (this: Worker, e) {
 		if (e.data.type === 'calc') {
 			const {time, data} = e.data
 			const {final_path, final_res} = data;
@@ -54,7 +58,7 @@ function onReady(e) {
 			$('.container').clear()
 
 
-
+			// @ts-expect-error Imports as html script
 			Highcharts.chart('container', {
 				chart: {
 					type: 'bar'
@@ -86,41 +90,54 @@ function onReady(e) {
 		}
 	})
 
-	function getMas(indexes) {
+	function getMas(indexes: number[]) {
 		const result = []
 		for (let i = 0; i < indexes.length - 1; ++i) {
 			result.unshift({
 				from: indexes[i],
 				to: indexes[i + 1],
-				value: matrix[indexes[i] - 1][indexes[i + 1] - 1]
+				// @ts-ignore
+				value: window.matrix[indexes[i] - 1][indexes[i + 1] - 1]
 			})
 		}
 		return result
 	}
 
-	slave.addEventListener('error', loader.hide)
+	// @ts-ignore
+	window.slave.addEventListener('error', loader.hide)
 }
 
-function ganttDiagram(e) {
+function ganttDiagram() {
 	loader.show()
 
+	// @ts-ignore
 	window.matrix = [...document.querySelectorAll('.table .row-data:not(.js-no-data)')]
 		.map(x => [...x.children].map(x => +x.textContent))
 
-	slave.postMessage({
+	// @ts-ignore
+	window.slave.postMessage({
 		type: 'calc',
 		payload: {
-			matrix,
+			// @ts-ignore
+			matrix: window.matrix,
 		}
-	});
+	})
+
+	return true
 }
 
-function fillRandom(e) {
+function fillRandom() {
+	// @ts-ignore
 	[...document.querySelectorAll('.table .row-data:not(.js-no-data)')]
-		.map((x, i) => [...x.children].forEach((x, j) => {
-			x.textContent = i !== j
-				? (Math.random() * 100 + 10).toFixed()
-				: 0
-		}))
+		.map(
+			(x, i) => [...x.children].forEach(
+				(x, j) => {
+					x.textContent = i !== j
+						? (Math.random() * 100 + 10).toFixed()
+						: 0
+				}
+			)
+		)
 
+	return true
 }
