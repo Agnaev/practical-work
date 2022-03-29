@@ -37,7 +37,7 @@ function onReady() {
 	// @ts-ignore
 	window.slave = new Worker('slave_worker.ts')
 	// @ts-ignore
-	winsow.slave.addEventListener('message', function (this: Worker, e) {
+	window.slave.addEventListener('message', function (this: Worker, e) {
 		if (e.data.type === 'calc') {
 			const {time, data} = e.data
 			const {final_path, final_res} = data;
